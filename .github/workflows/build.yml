@@ -1,0 +1,43 @@
+name: Build SleepInstaller Mixed-Mode DLL
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup VS tools
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Build x64 mixed-mode DLL
+        shell: cmd
+        run: |
+          csc /target:module empty.cs
+          cl /c sleep.c
+          link /DLL /LTCG /CLRIMAGETYPE:IJW /out:SleepInstaller-x64.dll sleep.obj empty.netmodule
+
+      - name: Setup VS tools x86
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
+
+      - name: Build x86 mixed-mode DLL
+        shell: cmd
+        run: |
+          csc /target:module empty.cs
+          cl /c sleep.c
+          link /DLL /LTCG /CLRIMAGETYPE:IJW /out:SleepInstaller-x86.dll sleep.obj empty.netmodule
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: SleepInstaller
+          path: SleepInstaller-*.dll

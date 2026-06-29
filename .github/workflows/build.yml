@@ -22,7 +22,7 @@ jobs:
         run: |
           csc /target:module empty.cs
           cl /c sleep.c
-          link /DLL /LTCG /CLRIMAGETYPE:IJW /out:SleepInstaller-x64.dll sleep.obj empty.netmodule
+          link /DLL /LTCG /CLRIMAGETYPE:IJW /out:SleepInstaller-x64.dll sleep.obj empty.netmodule mscoree.lib
 
       - name: Setup VS tools x86
         uses: ilammy/msvc-dev-cmd@v1
@@ -34,7 +34,7 @@ jobs:
         run: |
           csc /target:module empty.cs
           cl /c sleep.c
-          link /DLL /LTCG /CLRIMAGETYPE:IJW /out:SleepInstaller-x86.dll sleep.obj empty.netmodule
+          link /DLL /LTCG /CLRIMAGETYPE:IJW /out:SleepInstaller-x86.dll sleep.obj empty.netmodule mscoree.lib
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
